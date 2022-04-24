@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -69,6 +70,8 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
 
+        User user = userService.findUserName(loginRequest.getUserName()); // get fullName
+
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(item -> item.getAuthority())
@@ -78,6 +81,7 @@ public class AuthController {
                 new ResponseObject("ok", "Login successfully!", new JwtResponse(jwt,
                                                                             userDetails.getId(),
                                                                             userDetails.getUsername(),
+                                                                            user.getFullName(),
                                                                             roles))
         );
     }
