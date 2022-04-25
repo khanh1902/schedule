@@ -17,8 +17,8 @@ public class Room {
     @Column(name = "capacity")
     private Long capacity;
 
-    @ManyToMany(mappedBy = "rooms", fetch = FetchType.LAZY)
-    private List<Course> courses = new ArrayList<>();
+//    @ManyToMany(mappedBy = "rooms", fetch = FetchType.LAZY)
+//    private List<Course> courses = new ArrayList<>();
 
     // Constructor
     public Room() {

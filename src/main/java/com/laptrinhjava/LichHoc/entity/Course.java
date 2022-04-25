@@ -21,6 +21,11 @@ public class Course {
     @Column(name = "amount")
     private Long amount;
 
+    @Column(name = "roomid")
+    private Long roomid;
+
+
+
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "createddate", nullable = false)
     private Date createdDate;
@@ -30,11 +35,11 @@ public class Course {
         createdDate = new Date();
     }
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "course_room",
-            joinColumns = @JoinColumn(name = "courseid"),
-            inverseJoinColumns = @JoinColumn(name = "roomid"))
-    private Set<Room> rooms = new HashSet<>();
+//    @ManyToMany(fetch = FetchType.LAZY)
+//    @JoinTable(name = "course_room",
+//            joinColumns = @JoinColumn(name = "courseid"),
+//            inverseJoinColumns = @JoinColumn(name = "roomid"))
+//    private Set<Room> rooms = new HashSet<>();
 
     // Constructor
     public Course() {
@@ -73,12 +78,20 @@ public class Course {
         this.amount = amount;
     }
 
-    public Set<Room> getRooms() {
-        return rooms;
+//    public Set<Room> getRooms() {
+//        return rooms;
+//    }
+//
+//    public void setRooms(Set<Room> rooms) {
+//        this.rooms = rooms;
+//    }
+
+    public Long getRoomid() {
+        return roomid;
     }
 
-    public void setRooms(Set<Room> rooms) {
-        this.rooms = rooms;
+    public void setRoomid(Long roomid) {
+        this.roomid = roomid;
     }
 
     public Date getCreatedDate() {

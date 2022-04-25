@@ -14,7 +14,6 @@ public class RoomServiceImpl implements RoomService {
     @Autowired
     private RoomRepository roomRepository;
 
-
     @Override
     public List<Room> findAll() {
         return roomRepository.findAll();
@@ -28,6 +27,11 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public Boolean existsByRoomName(String roomName) {
         return roomRepository.existsByRoomName(roomName);
+    }
+
+    @Override
+    public Room findRoomById(Long id) {
+        return roomRepository.findRoomById(id);
     }
 
     @Override

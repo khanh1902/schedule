@@ -11,5 +11,7 @@ public interface RoomService {
     List<Room> findAll();
     Room save(Room room);
     Boolean existsByRoomName(String roomName);
+    Room findRoomById(Long id);
     Optional<Room> findById(Long id);
+
 }
