@@ -109,6 +109,7 @@ public class CourseController {
             );
         }
         else {
+            courseService.delete(id);
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject("ok", "Delete successfully!", "")
             );

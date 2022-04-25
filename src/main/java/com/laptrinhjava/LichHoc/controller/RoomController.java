@@ -46,6 +46,7 @@ public class RoomController {
             );
         }
         else {
+            roomService.delete(id);
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject("ok", "Delete successfully!", "")
             );
