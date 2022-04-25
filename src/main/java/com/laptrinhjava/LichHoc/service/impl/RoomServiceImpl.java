@@ -38,4 +38,9 @@ public class RoomServiceImpl implements RoomService {
     public Optional<Room> findById(Long id) {
         return roomRepository.findById(id);
     }
+
+    @Override
+    public void delete(Long id) {
+        roomRepository.deleteById(id);
+    }
 }

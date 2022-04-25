@@ -1,5 +1,6 @@
 package com.laptrinhjava.LichHoc.controller;
 
+import com.laptrinhjava.LichHoc.entity.Course;
 import com.laptrinhjava.LichHoc.entity.ResponseObject;
 import com.laptrinhjava.LichHoc.entity.Room;
 import com.laptrinhjava.LichHoc.service.RoomService;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("api/room")
@@ -33,5 +35,20 @@ public class RoomController {
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject("ok", "Add room successfully!", roomService.save(room))
         );
+    }
+
+    @DeleteMapping("/{id}")
+    ResponseEntity<ResponseObject> delete(@PathVariable Long id){
+        Optional<Room> foundRoom = roomService.findById(id);
+        if(!foundRoom.isPresent()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ResponseObject("failed", "Delete failed!", "")
+            );
+        }
+        else {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject("ok", "Delete successfully!", "")
+            );
+        }
     }
 }

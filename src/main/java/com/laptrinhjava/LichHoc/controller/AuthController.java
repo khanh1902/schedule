@@ -4,6 +4,7 @@ import com.laptrinhjava.LichHoc.entity.ERole;
 import com.laptrinhjava.LichHoc.entity.ResponseObject;
 import com.laptrinhjava.LichHoc.entity.Role;
 import com.laptrinhjava.LichHoc.entity.User;
+import com.laptrinhjava.LichHoc.payload.request.ForgotPasswordRequest;
 import com.laptrinhjava.LichHoc.payload.request.LoginRequest;
 import com.laptrinhjava.LichHoc.payload.request.SignupRequest;
 import com.laptrinhjava.LichHoc.payload.response.JwtResponse;
@@ -130,19 +131,25 @@ public class AuthController {
     }
 
 
-//    @PostMapping("/forgot-password")
-//    public ResponseEntity<?> registerUser(@RequestParam(name = "username") String userName, @RequestBody ForgotPasswordRequest forgotPasswordRequest) {
-//        User foundUser = userRepository.findByUserName(userName);
-//        if (foundUser == null) {
-//            return ResponseEntity.badRequest().body(new MessageResponse("Username not exists!"));
-//        } else {
-//            if (forgotPasswordRequest.getNewPassword().equals(forgotPasswordRequest.getConfirmPassword())) {
-//                foundUser.setPassword(encoder.encode(forgotPasswordRequest.getNewPassword()));
-//                userRepository.save(foundUser);
-//                return ResponseEntity.ok("Update password successfully!");
-//            } else {
-//                return ResponseEntity.badRequest().body(new MessageResponse("Confirm password does not match!"));
-//            }
-//        }
-//    }
+    @PostMapping("/forgot-password")
+    public ResponseEntity<ResponseObject> registerUser(@RequestParam(name = "username") String userName, @RequestBody ForgotPasswordRequest forgotPasswordRequest) {
+        User foundUser = userService.findUserName(userName);
+        if (foundUser == null) {
+            return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
+                    new ResponseObject("failed", "Username not exists!", "")
+            );
+        } else {
+            if (forgotPasswordRequest.getNewPassword().equals(forgotPasswordRequest.getConfirmPassword())) {
+                foundUser.setPassword(encoder.encode(forgotPasswordRequest.getNewPassword()));
+                userService.save(foundUser);
+                return ResponseEntity.status(HttpStatus.OK).body(
+                        new ResponseObject("ok", "Update password successfully!", "")
+                );
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
+                        new ResponseObject("failed", "Confirm password does not match!", "")
+                );
+            }
+        }
+    }
 }

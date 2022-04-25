@@ -33,4 +33,9 @@ public class CourseServiceImpl implements CourseService {
     public Optional<Course> findById(Long id) {
         return courseRepository.findById(id);
     }
+
+    @Override
+    public void delete(Long id) {
+        courseRepository.deleteById(id);
+    }
 }

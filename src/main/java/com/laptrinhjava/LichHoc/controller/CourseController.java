@@ -99,4 +99,19 @@ public class CourseController {
                 new ResponseObject("ok", "Update course successfully!", updateCourse)
         );
     }
+
+    @DeleteMapping("/{id}")
+    ResponseEntity<ResponseObject> delete(@PathVariable Long id){
+        Optional<Course> foundCourse = courseService.findById(id);
+        if(!foundCourse.isPresent()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ResponseObject("failed", "Delete failed!", "")
+            );
+        }
+        else {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject("ok", "Delete successfully!", "")
+            );
+        }
+    }
 }

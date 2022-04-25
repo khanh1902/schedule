@@ -13,5 +13,5 @@ public interface RoomService {
     Boolean existsByRoomName(String roomName);
     Room findRoomById(Long id);
     Optional<Room> findById(Long id);
-
+    void delete(Long id);
 }
