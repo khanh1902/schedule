@@ -17,7 +17,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("api/course")
-@CrossOrigin(origins = "http://localhost:1212")
+@CrossOrigin(origins = "http://localhost:3000")
 public class CourseController {
     @Autowired
     private CourseService courseService;
@@ -59,19 +59,42 @@ public class CourseController {
         );
     }
 
+    // Update course
     @PatchMapping("/{id}")
     ResponseEntity<ResponseObject> update(@Valid @RequestBody Course newCourse, @PathVariable Long id) {
+        Course foundCourse = courseService.findCourseById(id);
         Course updateCourse = courseService.findById(id).map(
                 course -> {
-                    course.setCourseName(newCourse.getCourseName());
-                    course.setSchedule(newCourse.getSchedule());
-                    course.setAmount(newCourse.getAmount());
-                    course.setRoomid(newCourse.getRoomid());
+                    // set course name
+                    if (newCourse.getCourseName() == null)
+                        course.setCourseName(foundCourse.getCourseName());
+                    else
+                        course.setCourseName(newCourse.getCourseName());
+
+                    // set amount
+                    if (newCourse.getAmount() == null)
+                        course.setAmount(foundCourse.getAmount());
+                    else
+                        course.setAmount(newCourse.getAmount());
+
+                    // set schedule
+                    if (newCourse.getSchedule()== null)
+                        course.setSchedule(foundCourse.getSchedule());
+                    else
+                        course.setSchedule(newCourse.getSchedule());
+
+                    // set roomid
+                    if(newCourse.getRoomid() == null)
+                        course.setRoomid(foundCourse.getRoomid());
+                    else
+                        course.setRoomid(newCourse.getRoomid());
+
                     return courseService.save(course);
                 }).orElseGet(() -> {
             newCourse.setId(newCourse.getId());
             return courseService.save(newCourse);
         });
+
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject("ok", "Update course successfully!", updateCourse)
         );

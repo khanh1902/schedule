@@ -9,6 +9,7 @@ import java.util.Optional;
 @Service
 public interface CourseService {
     Course save(Course course);
+    Course findCourseById(Long id);
     List<Course> findAll();
     Optional<Course> findById(Long id);
 }

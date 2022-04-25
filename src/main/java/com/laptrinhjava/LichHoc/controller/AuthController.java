@@ -32,8 +32,8 @@ import java.util.stream.Collectors;
 
 
 @RestController
-
 @RequestMapping("/api/auth")
+@CrossOrigin(origins = "http://localhost:3000")
 public class AuthController {
     @Autowired
     AuthenticationManager authenticationManager;
@@ -50,7 +50,7 @@ public class AuthController {
     @Autowired
     JwtUtils jwtUtils;
 
-    @CrossOrigin(origins = "http://localhost:1212")
+
     @PostMapping("/signin")
     public ResponseEntity<ResponseObject> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
         List<User> foundUserName = userService.findAllByUserName(loginRequest.getUserName());
@@ -86,12 +86,11 @@ public class AuthController {
         );
     }
 
-    @CrossOrigin(origins = "http://localhost:1212")
     @PostMapping("/signup")
     public ResponseEntity<ResponseObject> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
         if (userService.existsByUserName(signUpRequest.getUserName())) {
             return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-                    new ResponseObject("failed", "Username available!", "")
+                    new ResponseObject("failed", "Username already exists!", "")
                     );
         }
 
@@ -131,7 +130,6 @@ public class AuthController {
     }
 
 
-//    @CrossOrigin(origins = "http://localhost:1212")
 //    @PostMapping("/forgot-password")
 //    public ResponseEntity<?> registerUser(@RequestParam(name = "username") String userName, @RequestBody ForgotPasswordRequest forgotPasswordRequest) {
 //        User foundUser = userRepository.findByUserName(userName);

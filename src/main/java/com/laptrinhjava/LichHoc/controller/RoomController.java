@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/room")
-@CrossOrigin(origins = "http://localhost:1212")
+@CrossOrigin(origins = "http://localhost:3000")
 public class RoomController {
 
     @Autowired
@@ -27,7 +27,7 @@ public class RoomController {
     ResponseEntity<ResponseObject> insert(@RequestBody Room room){
         if(roomService.existsByRoomName(room.getRoomName())){
             return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-                    new ResponseObject("failed", "Room Name available!", "")
+                    new ResponseObject("failed", "Room Name already exists!", "")
             );
         }
         return ResponseEntity.status(HttpStatus.OK).body(
