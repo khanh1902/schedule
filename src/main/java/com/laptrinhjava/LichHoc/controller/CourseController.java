@@ -60,7 +60,7 @@ public class CourseController {
     }
 
     // Update course
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     ResponseEntity<ResponseObject> update(@Valid @RequestBody Course newCourse, @PathVariable Long id) {
         Course foundCourse = courseService.findCourseById(id);
         Course updateCourse = courseService.findById(id).map(
