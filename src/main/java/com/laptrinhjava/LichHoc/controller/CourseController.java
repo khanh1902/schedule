@@ -17,7 +17,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("api/course")
-@CrossOrigin(origins = "http://localhost:3000",  maxAge = 3600)
+//@CrossOrigin(origins = "http://localhost:3000",  maxAge = 3600)
 public class CourseController {
     @Autowired
     private CourseService courseService;
