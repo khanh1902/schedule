@@ -1,14 +1,12 @@
 package com.laptrinhjava.LichHoc.entity;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "room")
 public class Room {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "roomname")
@@ -48,12 +46,4 @@ public class Room {
     public void setCapacity(Long capacity) {
         this.capacity = capacity;
     }
-
-//    public List<Course> getCourses() {
-//        return courses;
-//    }
-
-//    public void setCourses(List<Course> courses) {
-//        this.courses = courses;
-//    }
 }

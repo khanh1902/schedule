@@ -2,17 +2,15 @@ package com.laptrinhjava.LichHoc.entity;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "course")
 public class Course {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "coursename")
+    @Column(name = "course_name")
     private String courseName;
 
     @Column(name = "schedule")
@@ -21,13 +19,17 @@ public class Course {
     @Column(name = "amount")
     private Long amount;
 
+    @Column(name = "course_expire")
+    private Long courseExpire;
+
+    @Column(name = "is_can_start")
+    private Boolean isCanStart;
+
     @Column(name = "roomid")
     private Long roomid;
 
-
-
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "createddate", nullable = false)
+    @Column(name = "createddate")
     private Date createdDate;
 
     @PrePersist
@@ -40,6 +42,7 @@ public class Course {
 //            joinColumns = @JoinColumn(name = "courseid"),
 //            inverseJoinColumns = @JoinColumn(name = "roomid"))
 //    private Set<Room> rooms = new HashSet<>();
+
 
     // Constructor
     public Course() {
@@ -78,13 +81,21 @@ public class Course {
         this.amount = amount;
     }
 
-//    public Set<Room> getRooms() {
-//        return rooms;
-//    }
-//
-//    public void setRooms(Set<Room> rooms) {
-//        this.rooms = rooms;
-//    }
+    public Long getCourseExpire() {
+        return courseExpire;
+    }
+
+    public void setCourseExpire(Long courseExpire) {
+        this.courseExpire = courseExpire;
+    }
+
+    public Boolean getCanStart() {
+        return isCanStart;
+    }
+
+    public void setCanStart(Boolean canStart) {
+        isCanStart = canStart;
+    }
 
     public Long getRoomid() {
         return roomid;
@@ -92,6 +103,10 @@ public class Course {
 
     public void setRoomid(Long roomid) {
         this.roomid = roomid;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
     }
 
     public Date getCreatedDate() {

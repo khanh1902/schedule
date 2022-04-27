@@ -53,6 +53,11 @@ public class CourseController {
                     new ResponseObject("failed", "Amount must be less than " + foundRoom.getCapacity() + "!", "")
             );
         }
+        if (course.getAmount() < 15L) {
+            course.setCanStart(false);
+        } else {
+            course.setCanStart(true);
+        }
 
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject("ok", "Add course successfully!", courseService.save(course))
@@ -78,13 +83,13 @@ public class CourseController {
                         course.setAmount(newCourse.getAmount());
 
                     // set schedule
-                    if (newCourse.getSchedule()== null)
+                    if (newCourse.getSchedule() == null)
                         course.setSchedule(foundCourse.getSchedule());
                     else
                         course.setSchedule(newCourse.getSchedule());
 
                     // set roomid
-                    if(newCourse.getRoomid() == null)
+                    if (newCourse.getRoomid() == null)
                         course.setRoomid(foundCourse.getRoomid());
                     else
                         course.setRoomid(newCourse.getRoomid());
@@ -101,18 +106,23 @@ public class CourseController {
     }
 
     @DeleteMapping("/{id}")
-    ResponseEntity<ResponseObject> delete(@PathVariable Long id){
-        Optional<Course> foundCourse = courseService.findById(id);
-        if(!foundCourse.isPresent()){
+    ResponseEntity<ResponseObject> delete(@PathVariable Long id) {
+        Course foundCourse = courseService.findCourseById(id);
+        if (foundCourse == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                     new ResponseObject("failed", "Delete failed!", "")
             );
-        }
-        else {
-            courseService.delete(id);
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("ok", "Delete successfully!", "")
-            );
+        } else {
+            if (foundCourse.getCanStart() == true) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                        new ResponseObject("failed", "Delete failed. Class is locked!", "")
+                );
+            } else {
+                courseService.delete(id);
+                return ResponseEntity.status(HttpStatus.OK).body(
+                        new ResponseObject("ok", "Delete successfully!", "")
+                );
+            }
         }
     }
 }
