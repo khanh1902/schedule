@@ -64,7 +64,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors().and().csrf().disable();
+        http.cors();
 
         // Các trang không yêu cầu login
         http.authorizeRequests().antMatchers("api/auth/**").permitAll();
@@ -75,6 +75,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
          // Trang dành cho cả ADMIN và USER
 //        http.authorizeRequests().antMatchers("/api/product/**", "/api/user/**", "/api/category/**", "/api/bill/**")
 //                .access("hasAnyRole('USER', 'ADMIN')");
+
+        http.httpBasic().and().csrf().disable();
 
         http.authorizeRequests().and().formLogin()//
                 .loginProcessingUrl("/j_spring_security_login")//
