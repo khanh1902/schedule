@@ -19,23 +19,17 @@ public class Course {
     @Column(name = "amount")
     private Long amount;
 
-    @Column(name = "course_expire")
-    private Long courseExpire;
+    @Column(name = "duration")
+    private Long duration;
+
+    @Column(name = "is_scheduled")
+    private Boolean isScheduled;
 
     @Column(name = "is_can_start")
     private Boolean isCanStart;
 
     @Column(name = "roomid")
     private Long roomid;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "createddate")
-    private Date createdDate;
-
-    @PrePersist
-    private void onCreated() {
-        createdDate = new Date();
-    }
 
 //    @ManyToMany(fetch = FetchType.LAZY)
 //    @JoinTable(name = "course_room",
@@ -81,12 +75,20 @@ public class Course {
         this.amount = amount;
     }
 
-    public Long getCourseExpire() {
-        return courseExpire;
+    public Long getDuration() {
+        return duration;
     }
 
-    public void setCourseExpire(Long courseExpire) {
-        this.courseExpire = courseExpire;
+    public void setDuration(Long duration) {
+        this.duration = duration;
+    }
+
+    public Boolean getIsScheduled() {
+        return isScheduled;
+    }
+
+    public void setIsScheduled(Boolean scheduled) {
+        isScheduled = scheduled;
     }
 
     public Boolean getCanStart() {
@@ -103,13 +105,5 @@ public class Course {
 
     public void setRoomid(Long roomid) {
         this.roomid = roomid;
-    }
-
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public Date getCreatedDate() {
-        return createdDate;
     }
 }

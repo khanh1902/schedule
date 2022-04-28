@@ -32,21 +32,6 @@ public class CourseController {
 
     @PostMapping("/insert")
     ResponseEntity<ResponseObject> insert(@RequestBody Course course) {
-//        Course course = new Course();
-//        List<Long> strRooms = courseRequest.getRooms();
-//        Iterator<Long> iterator = null; // khai báo một Iterator
-//        Set<Room> rooms = new HashSet<>();
-//
-//        iterator = strRooms.iterator();
-//        while (iterator.hasNext()) {
-//            Room setRoom = roomService.findById(iterator.next())
-//                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-//            rooms.add(setRoom);
-//        }
-//        course.setCourseName(courseRequest.getCourseName());
-//        course.setSchedule(courseRequest.getSchedule());
-//        course.setAmount(courseRequest.getAmount());
-//        course.setRooms(rooms);
         Room foundRoom = roomService.findRoomById(course.getRoomid());
         if (foundRoom.getCapacity() < course.getAmount()) {
             return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
@@ -58,7 +43,7 @@ public class CourseController {
         } else {
             course.setCanStart(true);
         }
-
+        course.setIsScheduled(false);
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject("ok", "Add course successfully!", courseService.save(course))
         );
@@ -67,7 +52,7 @@ public class CourseController {
     // Update course
     @PutMapping("/{id}")
     ResponseEntity<ResponseObject> update(@Valid @RequestBody Course newCourse, @PathVariable Long id) {
-        Course foundCourse = courseService.findCourseById(id);
+        Course foundCourse = courseService.findCourseById(id); // Lấy thông tin cũ
         Course updateCourse = courseService.findById(id).map(
                 course -> {
                     // set course name
@@ -79,14 +64,28 @@ public class CourseController {
                     // set amount
                     if (newCourse.getAmount() == null)
                         course.setAmount(foundCourse.getAmount());
-                    else
+                    else{
                         course.setAmount(newCourse.getAmount());
+
+                        // set can start
+                        if (newCourse.getAmount() < 15L) {
+                            newCourse.setCanStart(false);
+                        } else {
+                            newCourse.setCanStart(true);
+                        }
+                    }
 
                     // set schedule
                     if (newCourse.getSchedule() == null)
                         course.setSchedule(foundCourse.getSchedule());
                     else
                         course.setSchedule(newCourse.getSchedule());
+
+                    // set duration
+                    if(newCourse.getDuration() == null)
+                        course.setDuration(foundCourse.getDuration());
+                    else
+                        course.setDuration(newCourse.getDuration());
 
                     // set roomid
                     if (newCourse.getRoomid() == null)
@@ -115,7 +114,7 @@ public class CourseController {
         } else {
             if (foundCourse.getCanStart() == true) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                        new ResponseObject("failed", "Delete failed. Class is locked!", "")
+                        new ResponseObject("failed", "Delete failed. Class locked!", "")
                 );
             } else {
                 courseService.delete(id);
