@@ -69,9 +69,9 @@ public class CourseController {
 
                         // set can start
                         if (newCourse.getAmount() < 15L) {
-                            newCourse.setCanStart(false);
+                            course.setCanStart(false);
                         } else {
-                            newCourse.setCanStart(true);
+                            course.setCanStart(true);
                         }
                     }
 
