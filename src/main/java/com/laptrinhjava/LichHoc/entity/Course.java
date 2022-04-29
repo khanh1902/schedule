@@ -6,9 +6,7 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "course")
-public class Course implements Serializable {
-    private static final Long serialVersionUID = 1L;
-
+public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

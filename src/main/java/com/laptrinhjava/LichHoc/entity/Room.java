@@ -5,9 +5,7 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "room")
-public class Room implements Serializable {
-    private static final Long serialVersionUID = 1L;
-
+public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
