@@ -1,7 +1,7 @@
 package com.laptrinhjava.LichHoc.entity;
 
 import javax.persistence.*;
-import java.util.Date;
+
 
 @Entity
 @Table(name = "course")
@@ -30,12 +30,6 @@ public class Course {
 
     @Column(name = "roomid")
     private Long roomid;
-
-//    @ManyToMany(fetch = FetchType.LAZY)
-//    @JoinTable(name = "course_room",
-//            joinColumns = @JoinColumn(name = "courseid"),
-//            inverseJoinColumns = @JoinColumn(name = "roomid"))
-//    private Set<Room> rooms = new HashSet<>();
 
 
     // Constructor
