@@ -1,10 +1,13 @@
 package com.laptrinhjava.LichHoc.entity;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "room")
-public class Room {
+public class Room implements Serializable {
+    private static final Long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
