@@ -10,6 +10,7 @@ import java.util.Optional;
 public interface CourseService {
     Course save(Course course);
     Course findCourseById(Long id);
+    Course findCourseByRoomId(Long roomid);
     List<Course> findAll();
     Optional<Course> findById(Long id);
     void delete(Long id);

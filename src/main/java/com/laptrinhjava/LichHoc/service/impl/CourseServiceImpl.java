@@ -25,6 +25,11 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public Course findCourseByRoomId(Long roomid) {
+        return courseRepository.findCourseByRoomid(roomid);
+    }
+
+    @Override
     public List<Course> findAll() {
         return courseRepository.findAll();
     }

@@ -1,7 +1,9 @@
 package com.laptrinhjava.LichHoc.controller;
 
+import com.laptrinhjava.LichHoc.entity.Course;
 import com.laptrinhjava.LichHoc.entity.ResponseObject;
 import com.laptrinhjava.LichHoc.entity.Room;
+import com.laptrinhjava.LichHoc.service.CourseService;
 import com.laptrinhjava.LichHoc.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,11 +15,14 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("api/room")
-//@CrossOrigin(origins = "http://localhost:3000",  maxAge = 3600)
 public class RoomController {
 
     @Autowired
     private RoomService roomService;
+
+    @Autowired
+    private CourseService courseService;
+
 
     @GetMapping("")
     List<Room> getAll(){
@@ -45,7 +50,13 @@ public class RoomController {
             );
         }
         else {
-            roomService.delete(id);
+            Course foundCourse = courseService.findCourseByRoomId(id);
+            if(foundCourse==null)
+                roomService.delete(id);
+            else
+                return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
+                        new ResponseObject("failed", "Delete failed. The course already exists in the room!", "")
+                );
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject("ok", "Delete successfully!", "")
             );
