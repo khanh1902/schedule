@@ -74,7 +74,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers("api/auth/**").permitAll();
 
         // Trang dành cho cả ADMIN
-        http.authorizeRequests().antMatchers("/api/test/**", "/api/room/**", "/api/course/**")
+        http.authorizeRequests().antMatchers("/api/test/**", "/api/room/**", "/api/course/**", "/api/home/**")
                 .access("hasRole('ADMIN')");
          // Trang dành cho cả ADMIN và USER
 //        http.authorizeRequests().antMatchers("/api/product/**", "/api/user/**", "/api/category/**", "/api/bill/**")

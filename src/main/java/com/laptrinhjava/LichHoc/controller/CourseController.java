@@ -3,8 +3,6 @@ package com.laptrinhjava.LichHoc.controller;
 import com.laptrinhjava.LichHoc.entity.Course;
 import com.laptrinhjava.LichHoc.entity.ResponseObject;
 import com.laptrinhjava.LichHoc.entity.Room;
-import com.laptrinhjava.LichHoc.payload.request.CourseRequest;
-import com.laptrinhjava.LichHoc.repository.CourseRepository;
 import com.laptrinhjava.LichHoc.service.CourseService;
 import com.laptrinhjava.LichHoc.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,55 +50,61 @@ public class CourseController {
     // Update course
     @PutMapping("/{id}")
     ResponseEntity<ResponseObject> update(@Valid @RequestBody Course newCourse, @PathVariable Long id) {
-        Course foundCourse = courseService.findCourseById(id); // Lấy thông tin cũ
-        Course updateCourse = courseService.findById(id).map(
-                course -> {
-                    // set course name
-                    if (newCourse.getCourseName() == null)
-                        course.setCourseName(foundCourse.getCourseName());
-                    else
-                        course.setCourseName(newCourse.getCourseName());
-
-                    // set amount
-                    if (newCourse.getAmount() == null)
-                        course.setAmount(foundCourse.getAmount());
-                    else{
-                        course.setAmount(newCourse.getAmount());
-
-                        // set can start
-                        if (newCourse.getAmount() < 15L) {
-                            course.setCanStart(false);
-                        } else {
-                            course.setCanStart(true);
-                        }
-                    }
-
-                    // set schedule
-                    if (newCourse.getSchedule() == null)
-                        course.setSchedule(foundCourse.getSchedule());
-                    else
-                        course.setSchedule(newCourse.getSchedule());
-
-                    // set duration
-                    if(newCourse.getDuration() == null)
-                        course.setDuration(foundCourse.getDuration());
-                    else
-                        course.setDuration(newCourse.getDuration());
-
-                    // set roomid
-                    if (newCourse.getRoomid() == null)
-                        course.setRoomid(foundCourse.getRoomid());
-                    else
-                        course.setRoomid(newCourse.getRoomid());
-
-                    return courseService.save(course);
-                }).orElseGet(() -> {
-            newCourse.setId(newCourse.getId());
-            return courseService.save(newCourse);
-        });
+//        Course foundCourse = courseService.findCourseById(id); // Lấy thông tin cũ
+//        Course updateCourse = courseService.findById(id).map(
+//                course -> {
+//                    // set course name
+//                    if (newCourse.getCourseName() == null)
+//                        course.setCourseName(foundCourse.getCourseName());
+//                    else
+//                        course.setCourseName(newCourse.getCourseName());
+//
+//                    // set amount
+//                    if (newCourse.getAmount() == null)
+//                        course.setAmount(foundCourse.getAmount());
+//                    else{
+//                        course.setAmount(newCourse.getAmount());
+//
+//                        // set can start
+//                        if (newCourse.getAmount() < 15L) {
+//                            course.setCanStart(false);
+//                        } else {
+//                            course.setCanStart(true);
+//                        }
+//                    }
+//
+//                    // set schedule
+//                    if (newCourse.getSchedule() == null)
+//                        course.setSchedule(foundCourse.getSchedule());
+//                    else
+//                        course.setSchedule(newCourse.getSchedule());
+//
+//                    // set duration
+//                    if(newCourse.getDuration() == null)
+//                        course.setDuration(foundCourse.getDuration());
+//                    else
+//                        course.setDuration(newCourse.getDuration());
+//
+//                    // set roomid
+//                    if (newCourse.getRoomid() == null)
+//                        course.setRoomid(foundCourse.getRoomid());
+//                    else
+//                        course.setRoomid(newCourse.getRoomid());
+//
+//                  // set is scheduled
+//                  if(newCourse.getIsScheduled()==null)
+//                      course.setIsScheduled(foundCourse.getIsScheduled());
+//                  else
+//                      course.setIsScheduled(newCourse.getIsScheduled());
+//
+//                    return courseService.save(course);
+//                }).orElseGet(() -> {
+//            newCourse.setId(newCourse.getId());
+//            return courseService.save(newCourse);
+//        });
 
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject("ok", "Update course successfully!", updateCourse)
+                new ResponseObject("ok", "Update course successfully!", courseService.update(newCourse, id))
         );
     }
 
@@ -112,7 +116,7 @@ public class CourseController {
                     new ResponseObject("failed", "Delete failed!", "")
             );
         } else {
-            if (foundCourse.getCanStart() == true) {
+            if (foundCourse.getIsScheduled() == true) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                         new ResponseObject("failed", "Delete failed. Class locked!", "")
                 );
