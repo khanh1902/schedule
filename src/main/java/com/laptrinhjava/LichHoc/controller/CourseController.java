@@ -55,16 +55,10 @@ public class CourseController {
                     new ResponseObject("failed", "Delete failed!", "")
             );
         } else {
-//            if (foundCourse.getDuration() != 0L)
-//                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-//                        new ResponseObject("failed", "Delete failed. Class locked!", "")
-//                );
-//            else {
             courseService.delete(id);
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject("ok", "Delete successfully!", "")
             );
-//            }
         }
     }
 }
