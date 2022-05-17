@@ -25,13 +25,13 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Course findCourseByRoomId(Long roomid) {
-        return courseRepository.findCourseByRoomid(roomid);
+    public List<Course> findAll() {
+        return courseRepository.findAll();
     }
 
     @Override
-    public List<Course> findAll() {
-        return courseRepository.findAll();
+    public List<Course> findCourseByDuration(Long duration) {
+        return courseRepository.findCourseByDuration(duration);
     }
 
     @Override
@@ -63,13 +63,13 @@ public class CourseServiceImpl implements CourseService {
 
                         // set can start
                         if (newCourse.getAmount() < 15L) {
-                            course.setCanStart(false);
+                            course.setIsScheduled(false);
                         } else {
-                            course.setCanStart(true);
+                            course.setIsScheduled(true);
                         }
                     }
 
-                    // set schedule
+                    // set schedule (lichhoc)
                     if (newCourse.getSchedule() == null)
                         course.setSchedule(foundCourse.getSchedule());
                     else
@@ -80,12 +80,6 @@ public class CourseServiceImpl implements CourseService {
                         course.setDuration(foundCourse.getDuration());
                     else
                         course.setDuration(newCourse.getDuration());
-
-                    // set roomid
-                    if (newCourse.getRoomid() == null)
-                        course.setRoomid(foundCourse.getRoomid());
-                    else
-                        course.setRoomid(newCourse.getRoomid());
 
                     // set is scheduled
                     if(newCourse.getIsScheduled()==null)
@@ -99,5 +93,33 @@ public class CourseServiceImpl implements CourseService {
             return courseRepository.save(newCourse);
         });
         return updateCourse;
+    }
+
+    @Override
+    public List<Course> sortCourseByBubbleSort(List<Course> findCourses) {
+        boolean haveSwap = false;
+        for(int i = 0; i < findCourses.size() - 1; i++){
+            haveSwap = false;
+            for (int j = 0; j < findCourses.size() - i - 1; j++){
+                if(findCourses.get(j).getAmount().compareTo(findCourses.get(j+1).getAmount()) > 0){
+                    Course temp = findCourses.get(j);
+                    findCourses.set(j, findCourses.get(j+1));
+                    findCourses.set(j+1, temp);
+                    haveSwap = true; // Kiểm tra lần lặp này có swap không
+                }
+                else if(findCourses.get(j).getAmount().compareTo(findCourses.get(j+1).getAmount()) > 0 &&
+                        findCourses.get(j).getDuration().compareTo(findCourses.get(j+1).getDuration()) > 0) {
+                    Course temp = findCourses.get(j);
+                    findCourses.set(j, findCourses.get(j+1));
+                    findCourses.set(j+1, temp);
+                    haveSwap = true;
+                }
+            }
+            // Nếu không có swap nào được thực hiện => mảng đã sắp xếp. Không cần lặp thêm
+            if(haveSwap == false){
+                break;
+            }
+        }
+        return findCourses;
     }
 }

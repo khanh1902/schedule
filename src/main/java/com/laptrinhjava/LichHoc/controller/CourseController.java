@@ -15,7 +15,6 @@ import java.util.*;
 
 @RestController
 @RequestMapping("api/course")
-//@CrossOrigin(origins = "http://localhost:3000",  maxAge = 3600)
 public class CourseController {
     @Autowired
     private CourseService courseService;
@@ -25,23 +24,16 @@ public class CourseController {
 
     @GetMapping("")
     List<Course> getAll() {
-        return courseService.findAll();
+        return courseService.sortCourseByBubbleSort(courseService.findAll());
     }
 
     @PostMapping("/insert")
     ResponseEntity<ResponseObject> insert(@RequestBody Course course) {
-        Room foundRoom = roomService.findRoomById(course.getRoomid());
-        if (foundRoom.getCapacity() < course.getAmount()) {
-            return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-                    new ResponseObject("failed", "Amount must be less than " + foundRoom.getCapacity() + "!", "")
-            );
-        }
         if (course.getAmount() < 15L) {
-            course.setCanStart(false);
+            course.setIsScheduled(false);
         } else {
-            course.setCanStart(true);
+            course.setIsScheduled(true);
         }
-        course.setIsScheduled(false);
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject("ok", "Add course successfully!", courseService.save(course))
         );
@@ -50,59 +42,6 @@ public class CourseController {
     // Update course
     @PutMapping("/{id}")
     ResponseEntity<ResponseObject> update(@Valid @RequestBody Course newCourse, @PathVariable Long id) {
-//        Course foundCourse = courseService.findCourseById(id); // Lấy thông tin cũ
-//        Course updateCourse = courseService.findById(id).map(
-//                course -> {
-//                    // set course name
-//                    if (newCourse.getCourseName() == null)
-//                        course.setCourseName(foundCourse.getCourseName());
-//                    else
-//                        course.setCourseName(newCourse.getCourseName());
-//
-//                    // set amount
-//                    if (newCourse.getAmount() == null)
-//                        course.setAmount(foundCourse.getAmount());
-//                    else{
-//                        course.setAmount(newCourse.getAmount());
-//
-//                        // set can start
-//                        if (newCourse.getAmount() < 15L) {
-//                            course.setCanStart(false);
-//                        } else {
-//                            course.setCanStart(true);
-//                        }
-//                    }
-//
-//                    // set schedule
-//                    if (newCourse.getSchedule() == null)
-//                        course.setSchedule(foundCourse.getSchedule());
-//                    else
-//                        course.setSchedule(newCourse.getSchedule());
-//
-//                    // set duration
-//                    if(newCourse.getDuration() == null)
-//                        course.setDuration(foundCourse.getDuration());
-//                    else
-//                        course.setDuration(newCourse.getDuration());
-//
-//                    // set roomid
-//                    if (newCourse.getRoomid() == null)
-//                        course.setRoomid(foundCourse.getRoomid());
-//                    else
-//                        course.setRoomid(newCourse.getRoomid());
-//
-//                  // set is scheduled
-//                  if(newCourse.getIsScheduled()==null)
-//                      course.setIsScheduled(foundCourse.getIsScheduled());
-//                  else
-//                      course.setIsScheduled(newCourse.getIsScheduled());
-//
-//                    return courseService.save(course);
-//                }).orElseGet(() -> {
-//            newCourse.setId(newCourse.getId());
-//            return courseService.save(newCourse);
-//        });
-
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject("ok", "Update course successfully!", courseService.update(newCourse, id))
         );
@@ -128,4 +67,36 @@ public class CourseController {
             }
         }
     }
+
+    private void swap(Course x, Course y) {
+        Course temp = x;
+        x = y;
+        y = temp;
+    }
+
+//    void sortCourses( List<Course> findCourses) {
+//        boolean haveSwap = false;
+//        for(int i = 0; i < findCourses.size() - 1; i++){
+//            haveSwap = false;
+//            for (int j = 0; j < findCourses.size() - i - 1; j++){
+//                if(findCourses.get(j).getAmount().compareTo(findCourses.get(j+1).getAmount()) > 0){
+//                    Course temp = findCourses.get(j);
+//                    findCourses.set(j, findCourses.get(j+1));
+//                    findCourses.set(j+1, temp);
+//                    haveSwap = true; // Kiểm tra lần lặp này có swap không
+//                }
+//                else if(findCourses.get(j).getAmount().compareTo(findCourses.get(j+1).getAmount()) > 0 &&
+//                        findCourses.get(j).getDuration().compareTo(findCourses.get(j+1).getDuration()) > 0) {
+//                    Course temp = findCourses.get(j);
+//                    findCourses.set(j, findCourses.get(j+1));
+//                    findCourses.set(j+1, temp);
+//                    haveSwap = true;
+//                }
+//            }
+//            // Nếu không có swap nào được thực hiện => mảng đã sắp xếp. Không cần lặp thêm
+//            if(haveSwap == false){
+//                break;
+//            }
+//        }
+//    }
 }

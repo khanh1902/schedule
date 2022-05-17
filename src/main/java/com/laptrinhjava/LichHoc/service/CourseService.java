@@ -10,9 +10,10 @@ import java.util.Optional;
 public interface CourseService {
     Course save(Course course);
     Course findCourseById(Long id);
-    Course findCourseByRoomId(Long roomid);
     List<Course> findAll();
+    List<Course> findCourseByDuration(Long duration);
     Optional<Course> findById(Long id);
     void delete(Long id);
     Course update(Course newCourse, Long id);
+    List<Course> sortCourseByBubbleSort(List<Course> findCourses);
 }

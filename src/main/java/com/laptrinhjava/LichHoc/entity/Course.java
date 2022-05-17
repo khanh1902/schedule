@@ -1,7 +1,12 @@
 package com.laptrinhjava.LichHoc.entity;
 
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
 import javax.persistence.*;
-import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 
 @Entity
@@ -26,15 +31,32 @@ public class Course {
     @Column(name = "is_scheduled")
     private Boolean isScheduled;
 
-    @Column(name = "is_can_start")
-    private Boolean isCanStart;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "createddate", nullable = false)
+    private Date createdDate;
 
-    @Column(name = "roomid")
-    private Long roomid;
+    @PrePersist
+    private void onCreated() {
+        createdDate = new Date();
+    } // init system time
 
+    @ManyToOne
+    @JoinColumn(name = "roomid")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Room room;
 
     // Constructor
     public Course() {
+    }
+
+    public Course(Long id, String courseName, String schedule, Long amount, Long duration, Boolean isScheduled) {
+        this.id = id;
+        this.courseName = courseName;
+        this.schedule = schedule;
+        this.amount = amount;
+        this.duration = duration;
+        this.isScheduled = isScheduled;
     }
 
     // Getter and Setter
@@ -86,19 +108,11 @@ public class Course {
         isScheduled = scheduled;
     }
 
-    public Boolean getCanStart() {
-        return isCanStart;
+    public Date getCreatedDate() {
+        return createdDate;
     }
 
-    public void setCanStart(Boolean canStart) {
-        isCanStart = canStart;
-    }
-
-    public Long getRoomid() {
-        return roomid;
-    }
-
-    public void setRoomid(Long roomid) {
-        this.roomid = roomid;
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
     }
 }

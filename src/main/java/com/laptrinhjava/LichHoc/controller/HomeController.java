@@ -25,7 +25,7 @@ public class HomeController {
     private RoomService roomService;
 
     @GetMapping("")
-    ResponseEntity<ResponseObject> getHome(){
+    ResponseEntity<ResponseObject> getHome() {
         Long totalCourse = 0L;
         Long planing = 0L;
         Long planed = 0L;
@@ -34,24 +34,23 @@ public class HomeController {
         Long room30 = 0L;
         Long room40 = 0L;
         List<Course> findCourse = courseService.findAll();
-        for (Course course : findCourse){
-                totalCourse ++;
-            if (course.getIsScheduled()==true)
-                planed ++;
+        for (Course course : findCourse) {
+            totalCourse++;
+            if (course.getIsScheduled() == true)
+                planed++;
             else
-                planing ++;
+                planing++;
         }
 
         List<Room> findRoom = roomService.findAll();
-        for(Room room : findRoom){
-            totalRoom ++;
-            if(room.getCapacity()==20)
+        for (Room room : findRoom) {
+            totalRoom++;
+            if (room.getCapacity() == 20)
                 room20++;
-            else if (room.getCapacity()==30)
+            else if (room.getCapacity() == 30)
                 room30++;
             else
                 room40++;
-
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(
