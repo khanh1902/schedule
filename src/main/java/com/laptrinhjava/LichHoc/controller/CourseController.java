@@ -55,48 +55,16 @@ public class CourseController {
                     new ResponseObject("failed", "Delete failed!", "")
             );
         } else {
-            if (foundCourse.getIsScheduled() == true) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                        new ResponseObject("failed", "Delete failed. Class locked!", "")
-                );
-            } else {
-                courseService.delete(id);
-                return ResponseEntity.status(HttpStatus.OK).body(
-                        new ResponseObject("ok", "Delete successfully!", "")
-                );
-            }
+//            if (foundCourse.getDuration() != 0L)
+//                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+//                        new ResponseObject("failed", "Delete failed. Class locked!", "")
+//                );
+//            else {
+            courseService.delete(id);
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject("ok", "Delete successfully!", "")
+            );
+//            }
         }
     }
-
-    private void swap(Course x, Course y) {
-        Course temp = x;
-        x = y;
-        y = temp;
-    }
-
-//    void sortCourses( List<Course> findCourses) {
-//        boolean haveSwap = false;
-//        for(int i = 0; i < findCourses.size() - 1; i++){
-//            haveSwap = false;
-//            for (int j = 0; j < findCourses.size() - i - 1; j++){
-//                if(findCourses.get(j).getAmount().compareTo(findCourses.get(j+1).getAmount()) > 0){
-//                    Course temp = findCourses.get(j);
-//                    findCourses.set(j, findCourses.get(j+1));
-//                    findCourses.set(j+1, temp);
-//                    haveSwap = true; // Kiểm tra lần lặp này có swap không
-//                }
-//                else if(findCourses.get(j).getAmount().compareTo(findCourses.get(j+1).getAmount()) > 0 &&
-//                        findCourses.get(j).getDuration().compareTo(findCourses.get(j+1).getDuration()) > 0) {
-//                    Course temp = findCourses.get(j);
-//                    findCourses.set(j, findCourses.get(j+1));
-//                    findCourses.set(j+1, temp);
-//                    haveSwap = true;
-//                }
-//            }
-//            // Nếu không có swap nào được thực hiện => mảng đã sắp xếp. Không cần lặp thêm
-//            if(haveSwap == false){
-//                break;
-//            }
-//        }
-//    }
 }

@@ -14,4 +14,5 @@ public interface RoomService {
     Room findRoomById(Long id);
     Optional<Room> findById(Long id);
     void delete(Long id);
+    List<Room> sortSchedule(List<Room> findRooms);
 }
