@@ -50,7 +50,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     // thuật toán lưu khóa học vào phòng học
-    // ưu tiên khóa học ngắn hạn
+    // ưu tiên khóa học ngắn hạn và khóa ít học viên
     // nếu khóa học có thời hạn bằng nhau thì ưu tiên số lượng học viên của mỗi khóa
     @Override
     public List<Room> sortSchedule(List<Room> findRooms) {
