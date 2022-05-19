@@ -51,7 +51,7 @@ public class RoomController {
     }
 
     // xếp lịch học
-    @GetMapping("schedule")
+    @GetMapping("/schedule")
     List<Room> getAll() {
         return roomService.sortSchedule(roomService.findAll());
     }
