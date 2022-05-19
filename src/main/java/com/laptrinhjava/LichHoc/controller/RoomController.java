@@ -1,6 +1,5 @@
 package com.laptrinhjava.LichHoc.controller;
 
-import com.laptrinhjava.LichHoc.entity.Course;
 import com.laptrinhjava.LichHoc.entity.ResponseObject;
 import com.laptrinhjava.LichHoc.entity.Room;
 import com.laptrinhjava.LichHoc.payload.response.RoomResponse;
@@ -53,7 +52,7 @@ public class RoomController {
     // xếp lịch học
     @GetMapping("/schedule")
     List<Room> getAll() {
-        return sortSchedule(roomService.findAll());
+        return roomService.sortSchedule(roomService.findAll());
     }
 
     // xóa phòng học
@@ -75,61 +74,5 @@ public class RoomController {
                         new ResponseObject("ok", "Delete successfully!", "")
                 );
         }
-    }
-
-    public List<Room> sortSchedule(List<Room> findRooms) {
-        List<Course> lichChan; // mảng tạm lưu khóa học có lịch chẵn
-        List<Course> lichLe; // mảng tạm lưu khóa học có lịch lẽ
-        List<Course> findCourses = courseService.sortCourseByBubbleSort(courseService.findAll());
-        Queue<Course> courseQueue = new ArrayDeque<Course>(); // hàng đợi lưu khóa học
-
-        for (Room room : findRooms) {
-            courseQueue.addAll(findCourses); // thêm các khóa học vào hàng đợi
-            for (Course course : courseQueue) {
-                // khởi tạo danh sách tạm
-                lichChan = new ArrayList<>();
-                lichLe = new ArrayList<>();
-
-                if (course.getIsScheduled().equals(false)) { // khóa học chưa khóa
-                    courseQueue.remove(course);
-                } else if ((room.getCapacity() - course.getAmount() >= 0L) // số học viên < chỗ ngồi
-                        && (room.getCapacity() - course.getAmount() < 10L) // chọn phòng phù hợp
-                        && course.getIsScheduled().equals(true)) { // khóa học đã khóa
-                    if (course.getSchedule().equals("1")) {
-                        if (!room.getLichChan().isEmpty()) // nếu phòng đã có khóa học thì bỏ qua
-                            break;
-                        else {
-                            lichChan.add(course); // thêm khóa học trong hàng đợi vào lichChan
-                            room.setLichChan(lichChan);
-                            roomService.save(room);
-                            courseQueue.remove(course);
-                        }
-                    } else if (course.getSchedule().equals("2")) {
-                        if (!room.getLichLe().isEmpty())
-                            break;
-                        else {
-                            lichLe.add(course);
-                            room.setLichLe(lichLe);
-                            roomService.save(room);
-                            courseQueue.remove(course);
-                        }
-                    } else {
-                        if (room.getLichLe().isEmpty()) {
-                            lichLe.add(course);
-                            room.setLichLe(lichLe);
-                            roomService.save(room);
-                        }
-                        if (room.getLichChan().isEmpty()) {
-                            lichChan.add(course);
-                            room.setLichChan(lichChan);
-                            roomService.save(room);
-                        }
-                        courseQueue.remove(course);
-                    }
-                }
-
-            }
-        }
-        return findRooms;
     }
 }
