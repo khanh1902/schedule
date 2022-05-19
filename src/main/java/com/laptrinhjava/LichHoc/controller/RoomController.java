@@ -1,6 +1,5 @@
 package com.laptrinhjava.LichHoc.controller;
 
-import com.laptrinhjava.LichHoc.entity.Course;
 import com.laptrinhjava.LichHoc.entity.ResponseObject;
 import com.laptrinhjava.LichHoc.entity.Room;
 import com.laptrinhjava.LichHoc.payload.response.RoomResponse;
