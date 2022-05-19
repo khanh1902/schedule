@@ -103,6 +103,7 @@ public class RoomServiceImpl implements RoomService {
                         courseQueue.remove(course);
                     }
                 }
+
             }
         }
         return findRooms;

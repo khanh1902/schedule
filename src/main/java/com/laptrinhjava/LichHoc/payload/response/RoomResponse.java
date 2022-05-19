@@ -20,7 +20,6 @@ public class RoomResponse {
     }
 
     // getter and setter
-
     public Long getId() {
         return id;
     }
