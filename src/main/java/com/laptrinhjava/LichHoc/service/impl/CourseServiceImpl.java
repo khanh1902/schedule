@@ -6,6 +6,8 @@ import com.laptrinhjava.LichHoc.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,7 +60,7 @@ public class CourseServiceImpl implements CourseService {
                     // set amount
                     if (newCourse.getAmount() == null)
                         course.setAmount(foundCourse.getAmount());
-                    else{
+                    else {
                         course.setAmount(newCourse.getAmount());
 
                         // set can start
@@ -76,16 +78,10 @@ public class CourseServiceImpl implements CourseService {
                         course.setSchedule(newCourse.getSchedule());
 
                     // set duration
-                    if(newCourse.getDuration() == null)
+                    if (newCourse.getDuration() == null)
                         course.setDuration(foundCourse.getDuration());
                     else
                         course.setDuration(newCourse.getDuration());
-
-                    // set is scheduled
-                    if(newCourse.getIsScheduled()==null)
-                        course.setIsScheduled(foundCourse.getIsScheduled());
-                    else
-                        course.setIsScheduled(newCourse.getIsScheduled());
 
                     return courseRepository.save(course);
                 }).orElseGet(() -> {
@@ -97,29 +93,68 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public List<Course> sortCourseByBubbleSort(List<Course> findCourses) {
-        boolean haveSwap = false;
-        for(int i = 0; i < findCourses.size() - 1; i++){
-            haveSwap = false;
-            for (int j = 0; j < findCourses.size() - i - 1; j++){
-                if(findCourses.get(j).getAmount().compareTo(findCourses.get(j+1).getAmount()) > 0){
+        for (int i = 0; i < findCourses.size() - 1; i++) {
+            for (int j = findCourses.size() - 1; j > i; j--) {
+                if (findCourses.get(j).getDuration().compareTo(findCourses.get(j - 1).getDuration()) < 0L) {
                     Course temp = findCourses.get(j);
-                    findCourses.set(j, findCourses.get(j+1));
-                    findCourses.set(j+1, temp);
-                    haveSwap = true; // Kiểm tra lần lặp này có swap không
-                }
-                else if(findCourses.get(j).getAmount().compareTo(findCourses.get(j+1).getAmount()) > 0 &&
-                        findCourses.get(j).getDuration().compareTo(findCourses.get(j+1).getDuration()) > 0) {
+                    findCourses.set(j, findCourses.get(j - 1));
+                    findCourses.set(j - 1, temp);
+                } else if (findCourses.get(j).getDuration().compareTo(findCourses.get(j - 1).getDuration()) == 0L
+                        && findCourses.get(j).getAmount().compareTo(findCourses.get(j - 1).getAmount()) > 0L) {
                     Course temp = findCourses.get(j);
-                    findCourses.set(j, findCourses.get(j+1));
-                    findCourses.set(j+1, temp);
-                    haveSwap = true;
+                    findCourses.set(j, findCourses.get(j - 1));
+                    findCourses.set(j - 1, temp);
                 }
-            }
-            // Nếu không có swap nào được thực hiện => mảng đã sắp xếp. Không cần lặp thêm
-            if(haveSwap == false){
-                break;
             }
         }
         return findCourses;
+    }
+
+    @Override
+    public Course updateCreatedDate(Long id, Date createddate, Long duration) {
+        Course updateCourse = courseRepository.findById(id).map(
+                course -> {
+                    // set createddate
+                    Date oldDate = createddate; // lấy thời gian từ khóa học trước
+                    Date newDate = new Date(oldDate.getTime() + ((1000 * 60 * 60 * 24) * 7 * duration));
+                    course.setCreatedDate(newDate);
+                    return courseRepository.save(course);
+                }
+        ).orElseThrow();
+        return updateCourse;
+    }
+
+    @Override
+    public List<Course> sortCourseByGreedyAlgorithm(List<Course> courses, int typeSchedule) {
+        // Sort all course according to decreasing order of amount
+        sortCourseByBubbleSort(courses);
+
+        // To keep track of free time slots
+        boolean[] result = new boolean[typeSchedule];
+
+        // To store result (Sequence of courses)
+        Long[] resultWithCourseId = new Long[typeSchedule];
+
+        // Iterate through all given schedule
+        for (int i = 0; i < courses.size(); i++) {
+            // Find a free schedule for this course (Note that we
+            // start from the last possible slot)
+            for (int j = Math.toIntExact(Math.min(typeSchedule - 1, courses.get(i).getDuration() - 1)); j >= 0; j--) {
+                // Free slot found
+                if (result[j] == false) {
+                    result[j] = true;
+                    resultWithCourseId[j] = courses.get(i).getId();
+                    break;
+                }
+            }
+        }
+
+        // remove all courses to add the sorted courses
+        courses.clear();
+        for (int i = 0; i < resultWithCourseId.length; i++) {
+            courses.add(i, findCourseById(resultWithCourseId[i]));
+        }
+        // return list course id
+        return courses;
     }
 }

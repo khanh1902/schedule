@@ -1,5 +1,6 @@
 package com.laptrinhjava.LichHoc.controller;
 
+import com.laptrinhjava.LichHoc.entity.Course;
 import com.laptrinhjava.LichHoc.entity.ResponseObject;
 import com.laptrinhjava.LichHoc.entity.Room;
 import com.laptrinhjava.LichHoc.payload.response.RoomResponse;
@@ -61,13 +62,12 @@ public class RoomController {
         Room foundRoom = roomService.findRoomById(id);
         if (foundRoom == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject("failed", "Delete failed!", "")
+                    new ResponseObject("failed", "Delete failed. Room not exists!", "")
             );
         } else {
-
             if (!foundRoom.getLichLe().isEmpty() || !foundRoom.getLichChan().isEmpty())
                 return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-                        new ResponseObject("failed", "Delete failed", "")
+                        new ResponseObject("failed", "Delete failed!", "")
                 );
             else
                 return ResponseEntity.status(HttpStatus.OK).body(
@@ -75,4 +75,7 @@ public class RoomController {
                 );
         }
     }
+
+
 }
+

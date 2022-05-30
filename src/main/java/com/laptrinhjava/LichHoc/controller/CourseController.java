@@ -52,7 +52,7 @@ public class CourseController {
         Course foundCourse = courseService.findCourseById(id);
         if (foundCourse == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject("failed", "Delete failed!", "")
+                    new ResponseObject("failed", "Delete failed. Course not exists!", "")
             );
         } else {
             courseService.delete(id);
