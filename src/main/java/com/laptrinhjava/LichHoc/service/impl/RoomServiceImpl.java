@@ -191,8 +191,9 @@ public class RoomServiceImpl implements RoomService {
             courseService.deleteCoursesById(courses, findCourses);
         }
         for (Course findCourse : courseQueue) {
+            List<Course> courseTemp = new ArrayList<>();
+            courseTemp.add(findCourse);
             for(Room findRoom : findRooms){
-                List<Course> courseTemp = new ArrayList<>();
                 if (findCourse.getIsScheduled().equals(false)) { // course is not locked
                     break;
                 } else if (findCourse.getIsScheduled().equals(true)
@@ -205,29 +206,28 @@ public class RoomServiceImpl implements RoomService {
                         if (!findRoom.getLichChan().isEmpty()) // if room not null, do not add the course
                             break;
                         else {
-                            courseTemp.add(findCourse);
                             findRoom.setLichChan(courseTemp);
                             roomRepository.save(findRoom);
                         }
+                        break;
                     } else if (findCourse.getSchedule().equals("2")) {
                         if (!findRoom.getLichLe().isEmpty())
                             break;
                         else {
-                            courseTemp.add(findCourse);
                             findRoom.setLichLe(courseTemp);
                             roomRepository.save(findRoom);
                         }
+                        break;
                     } else { // course has schedule = 3. if room has lichChan or lichLe null, add the course
                         if (findRoom.getLichLe().isEmpty()) {
-                            courseTemp.add(findCourse);
                             findRoom.setLichLe(courseTemp);
                             roomRepository.save(findRoom);
                         }
                         if (findRoom.getLichChan().isEmpty()) {
-                            courseTemp.add(findCourse);
                             findRoom.setLichChan(courseTemp);
                             roomRepository.save(findRoom);
                         }
+                        break;
                     }
                 }
             }
