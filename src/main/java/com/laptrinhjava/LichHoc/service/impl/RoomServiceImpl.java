@@ -50,7 +50,6 @@ public class RoomServiceImpl implements RoomService {
     }
 
 
-
     @Override
     public List<Room> sortRoom(List<Room> roomList) {
         for (int i = 0; i < roomList.size() - 1; i++) {
@@ -185,7 +184,7 @@ public class RoomServiceImpl implements RoomService {
         sortRoom(findRooms); // sort desc room by capacity
         List<Course> courses = courseService.findAll();
         Queue<Course> courseQueue = new ArrayDeque<>();
-        while (!courses.isEmpty()){
+        while (!courses.isEmpty()) {
             List<Course> findCourses = courseService.sortCourseByGreedyAlgorithm(courses);
             courseQueue.addAll(findCourses);
             courseService.deleteCoursesById(courses, findCourses);
@@ -193,7 +192,7 @@ public class RoomServiceImpl implements RoomService {
         for (Course findCourse : courseQueue) {
             List<Course> courseTemp = new ArrayList<>();
             courseTemp.add(findCourse);
-            for(Room findRoom : findRooms){
+            for (Room findRoom : findRooms) {
                 if (findCourse.getIsScheduled().equals(false)) { // course is not locked
                     break;
                 } else if (findCourse.getIsScheduled().equals(true)
@@ -203,21 +202,24 @@ public class RoomServiceImpl implements RoomService {
                     // schedule = 2 => lichLe
                     // schedule = 3 => full
                     if (findCourse.getSchedule().equals("1")) {
-                        if (!findRoom.getLichChan().isEmpty()) // if room not null, do not add the course
-                            break;
+                        // if room not null, do not add the course
+                        if (!findRoom.getLichChan().isEmpty())
+                            continue;
                         else {
                             findRoom.setLichChan(courseTemp);
                             roomRepository.save(findRoom);
+                            break;
                         }
-                        break;
+
                     } else if (findCourse.getSchedule().equals("2")) {
                         if (!findRoom.getLichLe().isEmpty())
-                            break;
+                            continue;
                         else {
                             findRoom.setLichLe(courseTemp);
                             roomRepository.save(findRoom);
+                            break;
                         }
-                        break;
+
                     } else { // course has schedule = 3. if room has lichChan or lichLe null, add the course
                         if (findRoom.getLichLe().isEmpty()) {
                             findRoom.setLichLe(courseTemp);
@@ -228,6 +230,7 @@ public class RoomServiceImpl implements RoomService {
                             roomRepository.save(findRoom);
                         }
                         break;
+
                     }
                 }
             }
