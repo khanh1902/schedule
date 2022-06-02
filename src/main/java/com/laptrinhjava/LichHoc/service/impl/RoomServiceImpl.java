@@ -190,8 +190,8 @@ public class RoomServiceImpl implements RoomService {
             courseQueue.addAll(findCourses);
             courseService.deleteCoursesById(courses, findCourses);
         }
-        for (Room findRoom : findRooms) {
-            for(Course findCourse : courseQueue){
+        for (Course findCourse : courseQueue) {
+            for(Room findRoom : findRooms){
                 List<Course> courseTemp = new ArrayList<>();
                 if (findCourse.getIsScheduled().equals(false)) { // course is not locked
                     break;
@@ -208,7 +208,6 @@ public class RoomServiceImpl implements RoomService {
                             courseTemp.add(findCourse);
                             findRoom.setLichChan(courseTemp);
                             roomRepository.save(findRoom);
-                            courseQueue.remove(courseTemp);
                         }
                     } else if (findCourse.getSchedule().equals("2")) {
                         if (!findRoom.getLichLe().isEmpty())
@@ -217,7 +216,6 @@ public class RoomServiceImpl implements RoomService {
                             courseTemp.add(findCourse);
                             findRoom.setLichLe(courseTemp);
                             roomRepository.save(findRoom);
-                            courseQueue.remove(courseTemp);
                         }
                     } else { // course has schedule = 3. if room has lichChan or lichLe null, add the course
                         if (findRoom.getLichLe().isEmpty()) {
@@ -230,7 +228,6 @@ public class RoomServiceImpl implements RoomService {
                             findRoom.setLichChan(courseTemp);
                             roomRepository.save(findRoom);
                         }
-                        courseQueue.remove(courseTemp);
                     }
                 }
             }
