@@ -2,7 +2,6 @@ package com.laptrinhjava.LichHoc.controller;
 
 import com.laptrinhjava.LichHoc.entity.Course;
 import com.laptrinhjava.LichHoc.entity.ResponseObject;
-import com.laptrinhjava.LichHoc.entity.Room;
 import com.laptrinhjava.LichHoc.service.CourseService;
 import com.laptrinhjava.LichHoc.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -32,11 +32,6 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<Course> findCourseByDuration(Long duration) {
-        return courseRepository.findCourseByDuration(duration);
-    }
-
-    @Override
     public Optional<Course> findById(Long id) {
         return courseRepository.findById(id);
     }
@@ -77,11 +72,17 @@ public class CourseServiceImpl implements CourseService {
                     else
                         course.setSchedule(newCourse.getSchedule());
 
-                    // set duration
-                    if (newCourse.getDuration() == null)
-                        course.setDuration(foundCourse.getDuration());
+                    // set startDate
+                    if (newCourse.getStartDate() == null)
+                        course.setStartDate(foundCourse.getStartDate());
                     else
-                        course.setDuration(newCourse.getDuration());
+                        course.setStartDate(newCourse.getStartDate());
+
+                    // set endDate
+                    if (newCourse.getEndDate() == null)
+                        course.setEndDate(foundCourse.getEndDate());
+                    else
+                        course.setEndDate(foundCourse.getEndDate());
 
                     return courseRepository.save(course);
                 }).orElseGet(() -> {
@@ -95,12 +96,7 @@ public class CourseServiceImpl implements CourseService {
     public List<Course> sortCourseByBubbleSort(List<Course> findCourses) {
         for (int i = 0; i < findCourses.size() - 1; i++) {
             for (int j = findCourses.size() - 1; j > i; j--) {
-                if (findCourses.get(j).getDuration().compareTo(findCourses.get(j - 1).getDuration()) < 0L) {
-                    Course temp = findCourses.get(j);
-                    findCourses.set(j, findCourses.get(j - 1));
-                    findCourses.set(j - 1, temp);
-                } else if (findCourses.get(j).getDuration().compareTo(findCourses.get(j - 1).getDuration()) == 0L
-                        && findCourses.get(j).getAmount().compareTo(findCourses.get(j - 1).getAmount()) > 0L) {
+                if (findCourses.get(j).getEndDate().compareTo(findCourses.get(j - 1).getEndDate()) < 0L) {
                     Course temp = findCourses.get(j);
                     findCourses.set(j, findCourses.get(j - 1));
                     findCourses.set(j - 1, temp);
@@ -111,50 +107,67 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Course updateCreatedDate(Long id, Date createddate, Long duration) {
-        Course updateCourse = courseRepository.findById(id).map(
-                course -> {
-                    // set createddate
-                    Date oldDate = createddate; // lấy thời gian từ khóa học trước
-                    Date newDate = new Date(oldDate.getTime() + ((1000 * 60 * 60 * 24) * 7 * duration));
-                    course.setCreatedDate(newDate);
-                    return courseRepository.save(course);
-                }
-        ).orElseThrow();
-        return updateCourse;
-    }
-
-    @Override
-    public List<Course> sortCourseByGreedyAlgorithm(List<Course> courses, int typeSchedule) {
-        // Sort all course according to decreasing order of amount
+    public List<Course> sortCourseByGreedyAlgorithm(List<Course> courses) {
         sortCourseByBubbleSort(courses);
-
-        // To keep track of free time slots
-        boolean[] result = new boolean[typeSchedule];
-
-        // To store result (Sequence of courses)
-        Long[] resultWithCourseId = new Long[typeSchedule];
-
-        // Iterate through all given schedule
-        for (int i = 0; i < courses.size(); i++) {
-            // Find a free schedule for this course (Note that we
-            // start from the last possible slot)
-            for (int j = Math.toIntExact(Math.min(typeSchedule - 1, courses.get(i).getDuration() - 1)); j >= 0; j--) {
-                // Free slot found
-                if (result[j] == false) {
-                    result[j] = true;
-                    resultWithCourseId[j] = courses.get(i).getId();
-                    break;
+        List<Course> result = new ArrayList<>();
+        Course end = courses.get(0);
+        result.add(end);
+        for(int i = 0; i< courses.size(); i++){
+                if(courses.get(i).getEndDate().equals(end.getEndDate())){
+                    continue;
+                }
+                if(courses.get(i).getStartDate().compareTo(end.getEndDate()) >= 0){
+                    end = courses.get(i);
+                    result.add(courses.get(i));
+                }
+        }
+        return result;
+    }
+    @Override
+    public List<Course> deleteCoursesById(List<Course> findCourses, List<Course> coursesToDelete) {
+        for (int i = 0; i < findCourses.size(); i++) {
+            for (int j = 0; j < coursesToDelete.size(); j++) {
+                if (findCourses.get(i).equals(coursesToDelete.get(j))) {
+                    findCourses.remove(findCourses.get(i));
                 }
             }
         }
-
-        // remove all courses to add the sorted courses
-        courses.clear();
-        for (int i = 0; i < resultWithCourseId.length; i++) {
-            courses.add(i, findCourseById(resultWithCourseId[i]));
-        }
-        // return list course id
-        return courses;
+        return findCourses;
     }
+
+
+
+//    @Override
+//    public List<Course> sortCourseByGreedyAlgorithm(List<Course> courses, int typeSchedule) {
+//        // Sort all course according to decreasing order of amount
+//        sortCourseByBubbleSort(courses);
+//
+//        // To keep track of free time slots
+//        boolean[] result = new boolean[typeSchedule];
+//
+//        // To store result (Sequence of courses)
+//        Long[] resultWithCourseId = new Long[typeSchedule];
+//
+//        // Iterate through all given schedule
+//        for (int i = 0; i < courses.size(); i++) {
+//            // Find a free schedule for this course (Note that we
+//            // start from the last possible slot)
+//            for (int j = Math.toIntExact(Math.min(typeSchedule - 1, courses.get(i).getDuration() - 1)); j >= 0; j--) {
+//                // Free slot found
+//                if (result[j] == false) {
+//                    result[j] = true;
+//                    resultWithCourseId[j] = courses.get(i).getId();
+//                    break;
+//                }
+//            }
+//        }
+//
+//        // remove all courses to add the sorted courses
+//        courses.clear();
+//        for (int i = 0; i < resultWithCourseId.length; i++) {
+//            courses.add(i, findCourseById(resultWithCourseId[i]));
+//        }
+//        // return list course id
+//        return courses;
+//    }
 }

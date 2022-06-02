@@ -49,17 +49,7 @@ public class RoomServiceImpl implements RoomService {
         roomRepository.deleteById(id);
     }
 
-    @Override
-    public List<Course> deleteCoursesById(List<Course> findCourses, List<Course> coursesToDelete) {
-        for (int i = 0; i < findCourses.size(); i++) {
-            for (int j = 0; j < coursesToDelete.size(); j++) {
-                if (findCourses.get(i).equals(coursesToDelete.get(j))) {
-                    findCourses.remove(findCourses.get(i));
-                }
-            }
-        }
-        return findCourses;
-    }
+
 
     @Override
     public List<Room> sortRoom(List<Room> roomList) {
@@ -135,16 +125,73 @@ public class RoomServiceImpl implements RoomService {
     // thuật toán lưu khóa học vào phòng học
     // ưu tiên khóa học ngắn hạn và khóa nhiều học viên
     // nếu khóa học có thời hạn bằng nhau thì ưu tiên số lượng học viên của mỗi khóa
+//    @Override
+//    public List<Room> sortSchedule(List<Room> findRooms) {
+//        List<Course> coursesToDelete = new ArrayList<>();
+//        sortRoom(findRooms); // sort desc room by capacity
+//        for (Room findRoom : findRooms) {
+//            List<Course> courses = courseService.findAll();
+//            courseService.deleteCoursesById(courses, coursesToDelete); // delete course after add course to room
+//            coursesToDelete.clear();
+//            List<Course> findCourses = courseService.sortCourseByGreedyAlgorithm(courses); // sort course by greedy algorithm
+//            for (Course findCourse : findCourses) {
+//                List<Course> courseTemp = new ArrayList<>();
+//                if (findCourse.getIsScheduled().equals(false)) { // course is not locked
+//                    break;
+//                } else if (findCourse.getIsScheduled().equals(true)
+//                        && (findRoom.getCapacity() - findCourse.getAmount() >= 0L) // amount < capacity
+//                        && (findRoom.getCapacity() - findCourse.getAmount() < 10L)) { // capacity - amount < 10
+//                    // schedule = 1 => lichChan
+//                    // schedule = 2 => lichLe
+//                    // schedule = 3 => full
+//                    if (findCourse.getSchedule().equals("1")) {
+//                        if (!findRoom.getLichChan().isEmpty()) // if room not null, do not add the course
+//                            break;
+//                        else {
+//                            courseTemp.add(findCourse);
+//                            findRoom.setLichChan(courseTemp);
+//                            coursesToDelete.add(findCourse); // add course to coursesToDelete to remove course from findCourses
+//                            roomRepository.save(findRoom);
+//                        }
+//                    } else if (findCourse.getSchedule().equals("2")) {
+//                        if (!findRoom.getLichLe().isEmpty())
+//                            break;
+//                        else {
+//                            courseTemp.add(findCourse);
+//                            findRoom.setLichLe(courseTemp);
+//                            coursesToDelete.add(findCourse);
+//                            roomRepository.save(findRoom);
+//                        }
+//                    } else { // course has schedule = 3. if room has lichChan or lichLe null, add the course
+//                        if (findRoom.getLichLe().isEmpty()) {
+//                            courseTemp.add(findCourse);
+//                            findRoom.setLichLe(courseTemp);
+//                            roomRepository.save(findRoom);
+//                        }
+//                        if (findRoom.getLichChan().isEmpty()) {
+//                            courseTemp.add(findCourse);
+//                            findRoom.setLichChan(courseTemp);
+//                            roomRepository.save(findRoom);
+//                        }
+//                        coursesToDelete.add(findCourse);
+//                    }
+//                }
+//            }
+//        }
+//        return findRooms;
+//    }
     @Override
     public List<Room> sortSchedule(List<Room> findRooms) {
-        List<Course> coursesToDelete = new ArrayList<>();
         sortRoom(findRooms); // sort desc room by capacity
+        List<Course> courses = courseService.findAll();
+        Queue<Course> courseQueue = new ArrayDeque<>();
+        while (!courses.isEmpty()){
+            List<Course> findCourses = courseService.sortCourseByGreedyAlgorithm(courses);
+            courseQueue.addAll(findCourses);
+            courseService.deleteCoursesById(courses, findCourses);
+        }
         for (Room findRoom : findRooms) {
-            List<Course> findCourses = courseService.findAll();
-            deleteCoursesById(findCourses, coursesToDelete); // delete course after add course to room
-            coursesToDelete.clear();
-            courseService.sortCourseByGreedyAlgorithm(findCourses, 3); // sort course by greedy algorithm
-            for (Course findCourse : findCourses) {
+            for(Course findCourse : courseQueue){
                 List<Course> courseTemp = new ArrayList<>();
                 if (findCourse.getIsScheduled().equals(false)) { // course is not locked
                     break;
@@ -160,7 +207,6 @@ public class RoomServiceImpl implements RoomService {
                         else {
                             courseTemp.add(findCourse);
                             findRoom.setLichChan(courseTemp);
-                            coursesToDelete.add(findCourse); // add course to coursesToDelete to remove course from findCourses
                             roomRepository.save(findRoom);
                         }
                     } else if (findCourse.getSchedule().equals("2")) {
@@ -169,7 +215,6 @@ public class RoomServiceImpl implements RoomService {
                         else {
                             courseTemp.add(findCourse);
                             findRoom.setLichLe(courseTemp);
-                            coursesToDelete.add(findCourse);
                             roomRepository.save(findRoom);
                         }
                     } else { // course has schedule = 3. if room has lichChan or lichLe null, add the course
@@ -183,7 +228,6 @@ public class RoomServiceImpl implements RoomService {
                             findRoom.setLichChan(courseTemp);
                             roomRepository.save(findRoom);
                         }
-                        coursesToDelete.add(findCourse);
                     }
                 }
             }

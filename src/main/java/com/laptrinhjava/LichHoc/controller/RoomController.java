@@ -69,10 +69,10 @@ public class RoomController {
                 return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
                         new ResponseObject("failed", "Delete failed!", "")
                 );
-            else
-                return ResponseEntity.status(HttpStatus.OK).body(
-                        new ResponseObject("ok", "Delete successfully!", "")
-                );
+            roomService.delete(foundRoom.getId());
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject("ok", "Delete successfully!", "")
+            );
         }
     }
 

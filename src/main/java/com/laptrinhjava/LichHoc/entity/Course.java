@@ -1,14 +1,11 @@
 package com.laptrinhjava.LichHoc.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-
 
 @Entity
 @Table(name = "course")
@@ -26,20 +23,28 @@ public class Course {
     @Column(name = "amount")
     private Long amount;
 
-    @Column(name = "duration")
-    private Long duration;
+//    @Column(name = "duration")
+//    private Long duration;
 
     @Column(name = "is_scheduled")
     private Boolean isScheduled;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "createddate", nullable = false)
-    private Date createdDate;
+    @JsonFormat(pattern = "yyyy-MM-dd", shape = JsonFormat.Shape.STRING)
+    @Column (name = "startdate")
+    private String startDate;
 
-    @PrePersist
-    private void onCreated() {
-        createdDate = new Date();
-    } // init system time
+    @JsonFormat(pattern = "yyyy-MM-dd", shape = JsonFormat.Shape.STRING)
+    @Column (name = "enddate")
+    private String endDate;
+
+//    @Temporal(TemporalType.TIMESTAMP)
+//    @Column(name = "createddate", nullable = false)
+//    private Date createdDate;
+//
+//    @PrePersist
+//    private void onCreated() {
+//        createdDate = new Date();
+//    } // init system time
 
     @ManyToOne
     @JoinColumn(name = "roomid")
@@ -51,13 +56,14 @@ public class Course {
     public Course() {
     }
 
-    public Course(Long id, String courseName, String schedule, Long amount, Long duration, Boolean isScheduled) {
+    public Course(Long id, String courseName, String schedule, Long amount, Boolean isScheduled, String startDate, String endDate) {
         this.id = id;
         this.courseName = courseName;
         this.schedule = schedule;
         this.amount = amount;
-        this.duration = duration;
         this.isScheduled = isScheduled;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 
     // Getter and Setter
@@ -93,13 +99,13 @@ public class Course {
         this.amount = amount;
     }
 
-    public Long getDuration() {
-        return duration;
-    }
-
-    public void setDuration(Long duration) {
-        this.duration = duration;
-    }
+//    public Long getDuration() {
+//        return duration;
+//    }
+//
+//    public void setDuration(Long duration) {
+//        this.duration = duration;
+//    }
 
     public Boolean getIsScheduled() {
         return isScheduled;
@@ -109,11 +115,19 @@ public class Course {
         isScheduled = scheduled;
     }
 
-    public Date getCreatedDate() {
-        return createdDate;
+    public String getStartDate() {
+        return startDate;
     }
 
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
+
+    public String getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
     }
 }
