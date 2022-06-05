@@ -1,0 +1,45 @@
+create database xeplichhoc;
+use xeplichhoc;
+CREATE TABLE role (
+	id bigint NOT NULL PRIMARY KEY auto_increment,
+    name VARCHAR(255) NOT NULL
+);
+
+-- insert role
+INSERT INTO role(name) VALUES('ROLE_ADMIN');
+INSERT INTO role(name) VALUES('ROLE_USER');
+
+CREATE TABLE user (
+	id bigint NOT NULL PRIMARY KEY auto_increment,
+    username VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    fullname VARCHAR(255) NULL
+);
+
+CREATE TABLE user_roles (
+	userid bigint not null,
+    roleid bigint not null,
+    CONSTRAINT fk_user_roles_user FOREIGN KEY (userid) REFERENCES user(id),
+    CONSTRAINT fk_user_roles_role FOREIGN KEY (roleid) REFERENCES role(id)
+);
+
+CREATE TABLE room(
+	id bigint NOT NULL PRIMARY KEY auto_increment,
+    roomname VARCHAR(255) NULL,
+    capacity bigint null
+);
+
+ALTER TABLE room
+  DROP COLUMN courseid;
+
+CREATE TABLE course(
+	id bigint NOT NULL PRIMARY KEY auto_increment,
+    course_name VARCHAR(255) NULL,
+    schedule VARCHAR(255) NULL,
+    amount bigint null,
+    is_scheduled boolean null,
+    startdate date NULL,
+    enddate date NULL,
+    roomid bigint null,
+    constraint fk_courses_room foreign key(roomid) references room(id)
+);

@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -108,21 +107,22 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public List<Course> sortCourseByGreedyAlgorithm(List<Course> courses) {
-        sortCourseByBubbleSort(courses);
-        List<Course> result = new ArrayList<>();
-        Course end = courses.get(0);
-        result.add(end);
-        for(int i = 0; i< courses.size(); i++){
-                if(courses.get(i).getEndDate().equals(end.getEndDate())){
+        sortCourseByBubbleSort(courses);                                              // n^2
+        List<Course> result = new ArrayList<>();                                      // 1
+        Course end = courses.get(0);                                                  // 1
+        result.add(end);                                                              // 1
+        for(int i = 0; i< courses.size(); i++){                                       // n
+                if(courses.get(i).getEndDate().equals(end.getEndDate())){             // 1
                     continue;
                 }
-                if(courses.get(i).getStartDate().compareTo(end.getEndDate()) >= 0){
+                if(courses.get(i).getStartDate().compareTo(end.getEndDate()) >= 0){   // 1
                     end = courses.get(i);
                     result.add(courses.get(i));
                 }
         }
-        return result;
+        return result;                                                                // 1
     }
+
     @Override
     public List<Course> deleteCoursesById(List<Course> findCourses, List<Course> coursesToDelete) {
         for (int i = 0; i < findCourses.size(); i++) {
@@ -134,40 +134,4 @@ public class CourseServiceImpl implements CourseService {
         }
         return findCourses;
     }
-
-
-
-//    @Override
-//    public List<Course> sortCourseByGreedyAlgorithm(List<Course> courses, int typeSchedule) {
-//        // Sort all course according to decreasing order of amount
-//        sortCourseByBubbleSort(courses);
-//
-//        // To keep track of free time slots
-//        boolean[] result = new boolean[typeSchedule];
-//
-//        // To store result (Sequence of courses)
-//        Long[] resultWithCourseId = new Long[typeSchedule];
-//
-//        // Iterate through all given schedule
-//        for (int i = 0; i < courses.size(); i++) {
-//            // Find a free schedule for this course (Note that we
-//            // start from the last possible slot)
-//            for (int j = Math.toIntExact(Math.min(typeSchedule - 1, courses.get(i).getDuration() - 1)); j >= 0; j--) {
-//                // Free slot found
-//                if (result[j] == false) {
-//                    result[j] = true;
-//                    resultWithCourseId[j] = courses.get(i).getId();
-//                    break;
-//                }
-//            }
-//        }
-//
-//        // remove all courses to add the sorted courses
-//        courses.clear();
-//        for (int i = 0; i < resultWithCourseId.length; i++) {
-//            courses.add(i, findCourseById(resultWithCourseId[i]));
-//        }
-//        // return list course id
-//        return courses;
-//    }
 }
