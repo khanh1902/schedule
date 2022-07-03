@@ -2,6 +2,7 @@ package com.laptrinhjava.LichHoc.controller;
 
 import com.laptrinhjava.LichHoc.entity.Course;
 import com.laptrinhjava.LichHoc.entity.ResponseObject;
+import com.laptrinhjava.LichHoc.entity.Room;
 import com.laptrinhjava.LichHoc.service.CourseService;
 import com.laptrinhjava.LichHoc.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,13 @@ public class CourseController {
             course.setIsScheduled(false);
         } else {
             course.setIsScheduled(true);
+        }
+        List<Room> findRooms = roomService.findAll();
+        for(Room room : findRooms){
+            if(!room.getLichChan().isEmpty() && !room.getLichLe().isEmpty()){
+                return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
+                        new ResponseObject("ok", "Room is full!", ""));
+            }
         }
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject("ok", "Add course successfully!", courseService.save(course))
